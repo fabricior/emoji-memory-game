@@ -112,9 +112,3 @@ export function Game() {
     </div>
   );
 }
-
-// <>
-
-//               {/* <tr key={x.id}>{x.emoji}</tr>
-//               { index % 2 === 0 ? 3 : null }  */}
-//             </>
