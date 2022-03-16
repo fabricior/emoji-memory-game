@@ -43,7 +43,10 @@ type Action =
 function memoryGameReducer(state: BoardState, action: Action): BoardState {
   switch (action.type) {
     case "hide_all":
-      throw new Error("Function not implemented.");
+      return {
+        ...state,
+        cards: state.cards.map((card) => ({ ...card, isDisplayed: false })),
+      };
     case "display_one":
       return {
         ...state,
@@ -70,13 +73,12 @@ type RowViewProps = {
   dispatch: React.Dispatch<Action>;
 };
 
-interface CustomEvent extends React.MouseEvent<HTMLSpanElement> {
+interface CardClickedEvent extends React.MouseEvent<HTMLSpanElement> {
   card: Card;
 }
 
 function RowView(props: RowViewProps) {
-
-  const handleClick = (e: CustomEvent): void =>
+  const handleClick = (e: CardClickedEvent): void =>
     props.dispatch({ type: "display_one", selectedCardId: e.card.id });
 
   return (
@@ -106,6 +108,7 @@ export function Game() {
           ))}
         </tbody>
       </table>
+      <button onClick={() => dispatch({ type: "hide_all" })}>Hide All</button>
     </div>
   );
 }
