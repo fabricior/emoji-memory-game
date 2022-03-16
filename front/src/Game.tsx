@@ -68,6 +68,10 @@ function getRows(squares: Card[]): Row[] {
   return rows;
 }
 
+function countDisplayedCards(cards: Card[]): number {  
+  return cards.filter((card) => card.isDisplayed).length;
+}
+
 type RowViewProps = {
   row: Row;
   dispatch: React.Dispatch<Action>;
@@ -79,13 +83,13 @@ interface CardClickedEvent extends React.MouseEvent<HTMLSpanElement> {
 
 function RowView(props: RowViewProps) {
   const handleClick = (e: CardClickedEvent): void =>
-    props.dispatch({ type: "display_one", selectedCardId: e.card.id });
+    props.dispatch({ type: "display_one", selectedCardId: e.card.id });    
 
   return (
     <tr>
       {props.row.cards.map((card) => (
         <td key={card.id}>
-          <span onClick={(e) => handleClick({ ...e, card })}>
+          <span onClick={!card.isDisplayed ? (e) => handleClick({ ...e, card }) : undefined}>
             {card.isDisplayed ? card.emoji : "⬜"}
           </span>
         </td>
@@ -99,6 +103,9 @@ export function Game() {
 
   const rows = getRows(state.cards);
 
+  const count = countDisplayedCards(state.cards)
+  const isGameOver = count === state.cards.length 
+
   return (
     <div>
       <table style={{ border: "solid" }}>
@@ -109,6 +116,7 @@ export function Game() {
         </tbody>
       </table>
       <button onClick={() => dispatch({ type: "hide_all" })}>Hide All</button>
+      {isGameOver ? "Game over" : null}      
     </div>
   );
 }
