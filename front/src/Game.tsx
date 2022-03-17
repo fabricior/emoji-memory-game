@@ -1,4 +1,3 @@
-import { type } from "@testing-library/user-event/dist/type";
 import { useReducer } from "react";
 
 
@@ -10,7 +9,9 @@ type Card = {
 
 type BoardState = {
   currentPlayer: number;
+  previousCards: Array<Card>;
   cards: Card[];
+  IsIncorrectGuess: boolean;
 };
 
 type Row = {
@@ -20,6 +21,7 @@ type Row = {
 
 const initialState: BoardState = {
   currentPlayer: 1,
+  previousCards: [],
   cards: [
     { id: 0, emoji: "❤", displayedBy: null },
     { id: 1, emoji: "🌹", displayedBy: null },
@@ -38,11 +40,12 @@ const initialState: BoardState = {
     { id: 14, emoji: "🐱‍🐉", displayedBy: null },
     { id: 15, emoji: "🎂", displayedBy: null },
   ],
+  IsIncorrectGuess: false,
 };
 
 type Action =
   | { type: "reset" }
-  | { type: "display_one"; selectedCardId: number };
+  | { type: "display_one"; selectedCard: Card };
 
 function memoryGameReducer(state: BoardState, action: Action): BoardState {
   switch (action.type) {
@@ -61,15 +64,19 @@ function memoryGameReducer(state: BoardState, action: Action): BoardState {
       } else {
         newCurrentPlayer = state.currentPlayer
       }
+      
+      const previousCard = state.previousCards.slice(-1)[0];
 
       return {
         ...state,
         cards: state.cards.map((card) =>
-          card.id === action.selectedCardId
+          card.id === action.selectedCard.id
             ? { ...card, displayedBy: state.currentPlayer }
             : card
         ),
-        currentPlayer: newCurrentPlayer,        
+        currentPlayer: newCurrentPlayer,
+        previousCards: [...state.previousCards, action.selectedCard],
+        IsIncorrectGuess: previousCard != null && (previousCard.emoji !== action.selectedCard.emoji),
       };
   }
 }
@@ -98,7 +105,7 @@ interface CardClickedEvent extends React.MouseEvent<HTMLSpanElement> {
 
 function RowView(props: RowViewProps) {
   const handleClick = (e: CardClickedEvent): void =>
-    props.dispatch({ type: "display_one", selectedCardId: e.card.id });
+    props.dispatch({ type: "display_one", selectedCard: e.card });
 
   return (
     <tr>
@@ -138,6 +145,7 @@ export function Game() {
       </table>
       <button onClick={() => dispatch({ type: "reset" })}>Reset</button>
       {isGameOver ? "Game over" : null}
+      <label hidden={!state.IsIncorrectGuess}>Incorrect Guess</label>
     </div>
   );
 }
