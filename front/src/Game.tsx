@@ -41,15 +41,14 @@ const initialState: BoardState = {
 };
 
 type Action =
-  | { type: "hide_all" }
+  | { type: "reset" }
   | { type: "display_one"; selectedCardId: number };
 
 function memoryGameReducer(state: BoardState, action: Action): BoardState {
   switch (action.type) {
-    case "hide_all":
+    case "reset":
       return {
-        ...state,
-        cards: state.cards.map((card) => ({ ...card, isDisplayed: null })),
+        ...initialState
       };
     case "display_one":
       const numberOfCardsSoFar = countDisplayedCards(state.cards);
@@ -137,7 +136,7 @@ export function Game() {
           ))}
         </tbody>
       </table>
-      <button onClick={() => dispatch({ type: "hide_all" })}>Hide All</button>
+      <button onClick={() => dispatch({ type: "reset" })}>Reset</button>
       {isGameOver ? "Game over" : null}
     </div>
   );
