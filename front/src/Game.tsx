@@ -80,14 +80,21 @@ function memoryGameReducer(state: BoardState, action: Action): BoardState {
         ...state,
         cards: state.cards.map((card) =>
           card.id === action.selectedCard.id
-            ? { ...card, displayedBy: state.currentPlayer, displayedOnRound: state.round }
+            ? {
+                ...card,
+                displayedBy: state.currentPlayer,
+                displayedOnRound: state.round,
+              }
             : card
         ),
         currentPlayer: newCurrentPlayer,
         round: newRound,
       };
     case "revert_incorrect_guess":
-      const lastTwoCards = getTwoMostRecentlyDisplayedCardsInRound(state.cards, state.round - 1);
+      const lastTwoCards = getTwoMostRecentlyDisplayedCardsInRound(
+        state.cards,
+        state.round - 1
+      );
       return {
         ...state,
         cards: state.cards.map((c) =>
@@ -114,7 +121,10 @@ function countDisplayedCards(cards: Card[]): number {
   return cards.filter((card) => card.displayedBy).length;
 }
 
-function getTwoMostRecentlyDisplayedCardsInRound(cards: Card[], round: number): Card[] {
+function getTwoMostRecentlyDisplayedCardsInRound(
+  cards: Card[],
+  round: number
+): Card[] {
   return [...cards]
     .sort((a, b) => {
       if (a.displayedOnRound === null && b.displayedOnRound === null) {
@@ -132,7 +142,11 @@ function getTwoMostRecentlyDisplayedCardsInRound(cards: Card[], round: number): 
 }
 
 function computeGuessResult(cards: Array<Card>, round: number): GuessStatus {
-  const lastTwoCards = getTwoMostRecentlyDisplayedCardsInRound(cards, round );
+  const previousRound = round - 1;
+  const lastTwoCards = getTwoMostRecentlyDisplayedCardsInRound(
+    cards,
+    previousRound
+  );
   const count = lastTwoCards.length;
   const canComputeGuess = count > 0 && count % 2 === 0;
 
@@ -148,10 +162,48 @@ function computeGuessResult(cards: Array<Card>, round: number): GuessStatus {
   return GuessStatus.Incorrect;
 }
 
+function computeScores(
+  cards: Card[],
+  currentRound: number,
+  guessStatus: GuessStatus
+): { correctGuessesPlayer1: number; correctGuessesPlayer2: number } {
+  const upToRound =
+    currentRound - (guessStatus === GuessStatus.Correct ? 1 : 2);
+
+  let initialValue = { correctGuessesPlayer1: 0, correctGuessesPlayer2: 0 };
+
+  const isCorrectScoreForPlayer = (card: Card, player: PlayerNumber) => {
+    return (
+      card.displayedOnRound !== null &&
+      card.displayedOnRound <= upToRound &&
+      card.displayedBy === player
+    );
+  };
+
+  return cards.reduce(
+    (previousValue, currentItem) => ({
+      ...previousValue,
+      correctGuessesPlayer1: isCorrectScoreForPlayer(currentItem, 1)
+        ? previousValue.correctGuessesPlayer1 + 0.5
+        : previousValue.correctGuessesPlayer1,
+      correctGuessesPlayer2: isCorrectScoreForPlayer(currentItem, 2)
+        ? previousValue.correctGuessesPlayer2 + 0.5
+        : previousValue.correctGuessesPlayer2,
+    }),
+    initialValue
+  );
+}
+
 export function Game() {
   const [state, dispatch] = useReducer(memoryGameReducer, initialState);
 
-  const guessStatus = computeGuessResult(state.cards, state.round - 1);
+  const guessStatus = computeGuessResult(state.cards, state.round);
+
+  const { correctGuessesPlayer1, correctGuessesPlayer2 } = computeScores(
+    state.cards,
+    state.round,
+    guessStatus
+  );
 
   useEffect(() => {
     if (guessStatus === GuessStatus.Incorrect) {
@@ -189,11 +241,13 @@ export function Game() {
           ))}
         </tbody>
       </table>
+      <div>Score Player 1: {correctGuessesPlayer1} </div>
+      <div>Score Player 2: {correctGuessesPlayer2} </div>
       <button onClick={() => dispatch({ type: "reset" })}>Reset</button>
       {isGameOver ? "Game over" : null}
       <label hidden={guessStatus !== GuessStatus.Incorrect}>
         Incorrect Guess
-      </label>     
+      </label>
     </div>
   );
 }
