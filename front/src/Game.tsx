@@ -76,7 +76,7 @@ function memoryGameReducer(state: BoardState, action: Action): BoardState {
         ),
         currentPlayer: newCurrentPlayer,
         previousCards: [...state.previousCards, action.selectedCard],
-        IsIncorrectGuess: previousCard != null && (previousCard.emoji !== action.selectedCard.emoji),
+        IsIncorrectGuess: mustSwitchPlayers && previousCard != null && (previousCard.emoji !== action.selectedCard.emoji),
       };
   }
 }
@@ -96,6 +96,7 @@ function countDisplayedCards(cards: Card[]): number {
 
 type RowViewProps = {
   row: Row;
+  IsIncorrectGuess: boolean;
   dispatch: React.Dispatch<Action>;
 };
 
@@ -113,7 +114,7 @@ function RowView(props: RowViewProps) {
         <td key={card.id}>
           <span
             onClick={
-              !card.displayedBy ? (e) => handleClick({ ...e, card }) : undefined
+              !card.displayedBy && !props.IsIncorrectGuess ? (e) => handleClick({ ...e, card }) : undefined
             }
           >
             {card.displayedBy ? card.emoji : "⬜"}
@@ -139,7 +140,7 @@ export function Game() {
       <table style={{ border: "solid", marginLeft: "auto", marginRight: "auto" }}>
         <tbody>
           {rows.map((r) => (
-            <RowView key={r.id} row={r} dispatch={dispatch} />
+            <RowView key={r.id} row={r} dispatch={dispatch} IsIncorrectGuess={state.IsIncorrectGuess} />
           ))}
         </tbody>
       </table>
