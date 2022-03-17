@@ -10,7 +10,7 @@ type BoardState = {
   currentPlayer: number;
   previousCards: Array<Card>;
   cards: Card[];
-  IsIncorrectGuess: boolean;
+  isIncorrectGuess: boolean;
 };
 
 type Row = {
@@ -39,7 +39,7 @@ const initialState: BoardState = {
     { id: 14, emoji: "🐱‍🐉", displayedBy: null },
     { id: 15, emoji: "🎂", displayedBy: null },
   ],
-  IsIncorrectGuess: false,
+  isIncorrectGuess: false,
 };
 
 type Action =
@@ -76,7 +76,7 @@ function memoryGameReducer(state: BoardState, action: Action): BoardState {
         ),
         currentPlayer: newCurrentPlayer,
         previousCards: [...state.previousCards, action.selectedCard],
-        IsIncorrectGuess:
+        isIncorrectGuess:
           mustSwitchPlayers &&
           previousCard != null &&
           previousCard.emoji !== action.selectedCard.emoji,
@@ -85,7 +85,7 @@ function memoryGameReducer(state: BoardState, action: Action): BoardState {
       const lastTwoCards = state.previousCards.slice(-2);
       return {
         ...state,
-        IsIncorrectGuess: false,
+        isIncorrectGuess: false,
         cards: state.cards.map((c) =>
           lastTwoCards.find((q) => q.id === c.id)
             ? { ...c, displayedBy: null }
@@ -113,7 +113,7 @@ function countDisplayedCards(cards: Card[]): number {
 
 type RowViewProps = {
   row: Row;
-  IsIncorrectGuess: boolean;
+  isIncorrectGuess: boolean;
   dispatch: React.Dispatch<Action>;
 };
 
@@ -131,7 +131,7 @@ function RowView(props: RowViewProps) {
         <td key={card.id}>
           <span
             onClick={
-              !card.displayedBy && !props.IsIncorrectGuess
+              !card.displayedBy && !props.isIncorrectGuess
                 ? (e) => handleClick({ ...e, card })
                 : undefined
             }
@@ -148,7 +148,7 @@ export function Game() {
   const [state, dispatch] = useReducer(memoryGameReducer, initialState);
 
   useEffect(() => {
-    if (state.IsIncorrectGuess) {
+    if (state.isIncorrectGuess) {
       const timer = setTimeout(() => {
         dispatch({ type: "revert_incorrect_guess" });
       }, 3000);
@@ -157,7 +157,7 @@ export function Game() {
         clearTimeout(timer);
       };
     }    
-  }, [state.IsIncorrectGuess]);
+  }, [state.isIncorrectGuess]);
 
   const rows = getRows(state.cards);
 
@@ -177,14 +177,14 @@ export function Game() {
               key={r.id}
               row={r}
               dispatch={dispatch}
-              IsIncorrectGuess={state.IsIncorrectGuess}
+              isIncorrectGuess={state.isIncorrectGuess}
             />
           ))}
         </tbody>
       </table>
       <button onClick={() => dispatch({ type: "reset" })}>Reset</button>
       {isGameOver ? "Game over" : null}
-      <label hidden={!state.IsIncorrectGuess}>Incorrect Guess</label>
+      <label hidden={!state.isIncorrectGuess}>Incorrect Guess</label>
     </div>
   );
 }
