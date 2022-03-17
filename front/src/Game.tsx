@@ -1,6 +1,7 @@
 import { useEffect, useReducer } from "react";
+import { RowView } from "./RowView";
 
-type Card = {
+export type Card = {
   id: number;
   emoji: string;
   displayedBy: PlayerNumber | null;
@@ -15,12 +16,12 @@ type BoardState = {
   cards: Card[];
 };
 
-type Row = {
+export type Row = {
   id: number;
   cards: Card[];
 };
 
-enum GuessStatus {
+export enum GuessStatus {
   Unknown = "Unknown",
   Correct = "Correct",
   Incorrect = "Incorrect",
@@ -49,7 +50,7 @@ const initialState: BoardState = {
   ],
 };
 
-type Action =
+export type Action =
   | { type: "reset" }
   | { type: "display_one"; selectedCard: Card }
   | { type: "revert_incorrect_guess" };
@@ -145,39 +146,6 @@ function computeGuessResult(cards: Array<Card>, round: number): GuessStatus {
   }
 
   return GuessStatus.Incorrect;
-}
-
-type RowViewProps = {
-  row: Row;
-  guessStatus: GuessStatus;
-  dispatch: React.Dispatch<Action>;
-};
-
-interface CardClickedEvent extends React.MouseEvent<HTMLSpanElement> {
-  card: Card;
-}
-
-function RowView(props: RowViewProps) {
-  const handleClick = (e: CardClickedEvent): void =>
-    props.dispatch({ type: "display_one", selectedCard: e.card });
-
-  return (
-    <tr>
-      {props.row.cards.map((card) => (
-        <td key={card.id}>
-          <span
-            onClick={
-              !card.displayedBy && props.guessStatus !== GuessStatus.Incorrect
-                ? (e) => handleClick({ ...e, card })
-                : undefined
-            }
-          >
-            {card.displayedBy ? card.emoji : "⬜"}
-          </span>
-        </td>
-      ))}
-    </tr>
-  );
 }
 
 export function Game() {
