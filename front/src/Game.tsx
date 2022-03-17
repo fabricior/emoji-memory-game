@@ -1,12 +1,15 @@
+import { type } from "@testing-library/user-event/dist/type";
 import { useReducer } from "react";
+
 
 type Card = {
   id: number;
   emoji: string;
-  isDisplayed: boolean;
+  displayedBy: number | null;
 };
 
 type BoardState = {
+  currentPlayer: number;
   cards: Card[];
 };
 
@@ -16,23 +19,24 @@ type Row = {
 };
 
 const initialState: BoardState = {
+  currentPlayer: 1,
   cards: [
-    { id: 0, emoji: "❤", isDisplayed: false },
-    { id: 1, emoji: "🌹", isDisplayed: false },
-    { id: 2, emoji: "❤", isDisplayed: false },
-    { id: 3, emoji: "😍", isDisplayed: false },
-    { id: 4, emoji: "😍", isDisplayed: false },
-    { id: 5, emoji: "🏠", isDisplayed: false },
-    { id: 6, emoji: "👍", isDisplayed: false },
-    { id: 7, emoji: "😂", isDisplayed: false },
-    { id: 8, emoji: "😂", isDisplayed: false },
-    { id: 9, emoji: "🏠", isDisplayed: false },
-    { id: 10, emoji: "🌹", isDisplayed: false },
-    { id: 11, emoji: "👍", isDisplayed: false },
-    { id: 12, emoji: "🎂", isDisplayed: false },
-    { id: 13, emoji: "🐱‍🐉", isDisplayed: false },
-    { id: 14, emoji: "🐱‍🐉", isDisplayed: false },
-    { id: 15, emoji: "🎂", isDisplayed: false },
+    { id: 0, emoji: "❤", displayedBy: null },
+    { id: 1, emoji: "🌹", displayedBy: null },
+    { id: 2, emoji: "❤", displayedBy: null },
+    { id: 3, emoji: "😍", displayedBy: null },
+    { id: 4, emoji: "😍", displayedBy: null },
+    { id: 5, emoji: "🏠", displayedBy: null },
+    { id: 6, emoji: "👍", displayedBy: null },
+    { id: 7, emoji: "😂", displayedBy: null },
+    { id: 8, emoji: "😂", displayedBy: null },
+    { id: 9, emoji: "🏠", displayedBy: null },
+    { id: 10, emoji: "🌹", displayedBy: null },
+    { id: 11, emoji: "👍", displayedBy: null },
+    { id: 12, emoji: "🎂", displayedBy: null },
+    { id: 13, emoji: "🐱‍🐉", displayedBy: null },
+    { id: 14, emoji: "🐱‍🐉", displayedBy: null },
+    { id: 15, emoji: "🎂", displayedBy: null },
   ],
 };
 
@@ -45,16 +49,28 @@ function memoryGameReducer(state: BoardState, action: Action): BoardState {
     case "hide_all":
       return {
         ...state,
-        cards: state.cards.map((card) => ({ ...card, isDisplayed: false })),
+        cards: state.cards.map((card) => ({ ...card, isDisplayed: null })),
       };
     case "display_one":
+      const numberOfCardsSoFar = countDisplayedCards(state.cards);
+      const numberOfCardsAfterThisAction = numberOfCardsSoFar + 1;
+      const mustSwitchPlayers = numberOfCardsAfterThisAction % 2 === 0;
+      let newCurrentPlayer
+    
+      if (mustSwitchPlayers) {
+        newCurrentPlayer = state.currentPlayer === 1 ? 2 : 1
+      } else {
+        newCurrentPlayer = state.currentPlayer
+      }
+
       return {
         ...state,
         cards: state.cards.map((card) =>
           card.id === action.selectedCardId
-            ? { ...card, isDisplayed: true }
+            ? { ...card, displayedBy: state.currentPlayer }
             : card
         ),
+        currentPlayer: newCurrentPlayer,        
       };
   }
 }
@@ -68,8 +84,8 @@ function getRows(squares: Card[]): Row[] {
   return rows;
 }
 
-function countDisplayedCards(cards: Card[]): number {  
-  return cards.filter((card) => card.isDisplayed).length;
+function countDisplayedCards(cards: Card[]): number {
+  return cards.filter((card) => card.displayedBy).length;
 }
 
 type RowViewProps = {
@@ -83,14 +99,18 @@ interface CardClickedEvent extends React.MouseEvent<HTMLSpanElement> {
 
 function RowView(props: RowViewProps) {
   const handleClick = (e: CardClickedEvent): void =>
-    props.dispatch({ type: "display_one", selectedCardId: e.card.id });    
+    props.dispatch({ type: "display_one", selectedCardId: e.card.id });
 
   return (
     <tr>
       {props.row.cards.map((card) => (
         <td key={card.id}>
-          <span onClick={!card.isDisplayed ? (e) => handleClick({ ...e, card }) : undefined}>
-            {card.isDisplayed ? card.emoji : "⬜"}
+          <span
+            onClick={
+              !card.displayedBy ? (e) => handleClick({ ...e, card }) : undefined
+            }
+          >
+            {card.displayedBy ? card.emoji : "⬜"}
           </span>
         </td>
       ))}
@@ -103,12 +123,14 @@ export function Game() {
 
   const rows = getRows(state.cards);
 
-  const count = countDisplayedCards(state.cards)
-  const isGameOver = count === state.cards.length 
+  const count = countDisplayedCards(state.cards);
+  const isGameOver = count === state.cards.length;
 
   return (
     <div>
-      <table style={{ border: "solid" }}>
+      <h1>Memory Game</h1>
+      <h2>Current Player: {state.currentPlayer}</h2>
+      <table style={{ border: "solid", marginLeft: "auto", marginRight: "auto" }}>
         <tbody>
           {rows.map((r) => (
             <RowView key={r.id} row={r} dispatch={dispatch} />
@@ -116,7 +138,7 @@ export function Game() {
         </tbody>
       </table>
       <button onClick={() => dispatch({ type: "hide_all" })}>Hide All</button>
-      {isGameOver ? "Game over" : null}      
+      {isGameOver ? "Game over" : null}
     </div>
   );
 }
