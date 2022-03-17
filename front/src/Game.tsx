@@ -1,5 +1,4 @@
-import { useReducer } from "react";
-
+import { useEffect, useReducer } from "react";
 
 type Card = {
   id: number;
@@ -45,26 +44,27 @@ const initialState: BoardState = {
 
 type Action =
   | { type: "reset" }
-  | { type: "display_one"; selectedCard: Card };
+  | { type: "display_one"; selectedCard: Card }
+  | { type: "revert_incorrect_guess" };
 
 function memoryGameReducer(state: BoardState, action: Action): BoardState {
   switch (action.type) {
     case "reset":
       return {
-        ...initialState
+        ...initialState,
       };
     case "display_one":
       const numberOfCardsSoFar = countDisplayedCards(state.cards);
       const numberOfCardsAfterThisAction = numberOfCardsSoFar + 1;
       const mustSwitchPlayers = numberOfCardsAfterThisAction % 2 === 0;
-      let newCurrentPlayer
-    
+      let newCurrentPlayer;
+
       if (mustSwitchPlayers) {
-        newCurrentPlayer = state.currentPlayer === 1 ? 2 : 1
+        newCurrentPlayer = state.currentPlayer === 1 ? 2 : 1;
       } else {
-        newCurrentPlayer = state.currentPlayer
+        newCurrentPlayer = state.currentPlayer;
       }
-      
+
       const previousCard = state.previousCards.slice(-1)[0];
 
       return {
@@ -76,8 +76,25 @@ function memoryGameReducer(state: BoardState, action: Action): BoardState {
         ),
         currentPlayer: newCurrentPlayer,
         previousCards: [...state.previousCards, action.selectedCard],
-        IsIncorrectGuess: mustSwitchPlayers && previousCard != null && (previousCard.emoji !== action.selectedCard.emoji),
+        IsIncorrectGuess:
+          mustSwitchPlayers &&
+          previousCard != null &&
+          previousCard.emoji !== action.selectedCard.emoji,
       };
+    case "revert_incorrect_guess":
+      const lastTwoCards = state.previousCards.slice(-2);
+      return {
+        ...state,
+        IsIncorrectGuess: false,
+        cards: state.cards.map((c) =>
+          lastTwoCards.find((q) => q.id === c.id)
+            ? { ...c, displayedBy: null }
+            : { ...c }            
+        ),
+        previousCards: state.previousCards.slice(0, state.previousCards.length - 2)
+      };
+    default:
+      throw new Error("Unhandled action type");
   }
 }
 
@@ -114,7 +131,9 @@ function RowView(props: RowViewProps) {
         <td key={card.id}>
           <span
             onClick={
-              !card.displayedBy && !props.IsIncorrectGuess ? (e) => handleClick({ ...e, card }) : undefined
+              !card.displayedBy && !props.IsIncorrectGuess
+                ? (e) => handleClick({ ...e, card })
+                : undefined
             }
           >
             {card.displayedBy ? card.emoji : "⬜"}
@@ -128,6 +147,18 @@ function RowView(props: RowViewProps) {
 export function Game() {
   const [state, dispatch] = useReducer(memoryGameReducer, initialState);
 
+  useEffect(() => {
+    if (state.IsIncorrectGuess) {
+      const timer = setTimeout(() => {
+        dispatch({ type: "revert_incorrect_guess" });
+      }, 3000);
+
+      return () => {
+        clearTimeout(timer);
+      };
+    }    
+  }, [state.IsIncorrectGuess]);
+
   const rows = getRows(state.cards);
 
   const count = countDisplayedCards(state.cards);
@@ -137,10 +168,17 @@ export function Game() {
     <div>
       <h1>Memory Game</h1>
       <h2>Current Player: {state.currentPlayer}</h2>
-      <table style={{ border: "solid", marginLeft: "auto", marginRight: "auto" }}>
+      <table
+        style={{ border: "solid", marginLeft: "auto", marginRight: "auto" }}
+      >
         <tbody>
           {rows.map((r) => (
-            <RowView key={r.id} row={r} dispatch={dispatch} IsIncorrectGuess={state.IsIncorrectGuess} />
+            <RowView
+              key={r.id}
+              row={r}
+              dispatch={dispatch}
+              IsIncorrectGuess={state.IsIncorrectGuess}
+            />
           ))}
         </tbody>
       </table>
