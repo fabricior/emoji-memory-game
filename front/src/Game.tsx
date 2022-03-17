@@ -3,11 +3,13 @@ import { useEffect, useReducer } from "react";
 type Card = {
   id: number;
   emoji: string;
-  displayedBy: number | null;
+  displayedBy: PlayerNumber | null;
 };
 
+type PlayerNumber = 1 | 2
+
 type BoardState = {
-  currentPlayer: number;
+  currentPlayer: PlayerNumber;
   previousCards: Array<Card>;
   cards: Card[];
   isIncorrectGuess: boolean;
@@ -57,7 +59,7 @@ function memoryGameReducer(state: BoardState, action: Action): BoardState {
       const numberOfCardsSoFar = countDisplayedCards(state.cards);
       const numberOfCardsAfterThisAction = numberOfCardsSoFar + 1;
       const mustSwitchPlayers = numberOfCardsAfterThisAction % 2 === 0;
-      let newCurrentPlayer;
+      let newCurrentPlayer: PlayerNumber;
 
       if (mustSwitchPlayers) {
         newCurrentPlayer = state.currentPlayer === 1 ? 2 : 1;
