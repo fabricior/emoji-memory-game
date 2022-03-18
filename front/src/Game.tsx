@@ -161,7 +161,7 @@ export function Game() {
     <div className="grid place-items-center m-4">
       <div className="grid grid-flow-row auto-cols-max text-center font-semibold ">
         <div className="bg-sailor-blue text-mint font-bold p-4">
-          <h1>😂 Emoji Memory Game 😂</h1>
+          <h1>😂 Emoji Memory Matching Game 😂</h1>
         </div>
         <div className="grid grid-flow-col gap-1 p-2">
           <Player
