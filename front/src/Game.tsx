@@ -111,7 +111,7 @@ function Status(props: StatusProps) {
   if (props.isGameOver) {
     content = <span className="font-bold">Game Over!</span>
   } else if (props.guessStatus === GuessStatus.Incorrect) {
-    content = <span className="font-bold text-red-500">Incorrect!</span>
+    content = <span className="font-bold text-red-500">No match!</span>
   } else {
     content = (
       <span>
@@ -191,7 +191,7 @@ export function Game() {
           ></Status>
           <div>
             <button
-              className="bg-sailor-blue text-mint font-bold rounded-full p-4"
+              className="bg-sailor-blue text-mint rounded-full p-4 transition ease-in-out delay-70 hover:-translate-y-1 hover:scale-105 duration-100"
               onClick={() => dispatch({ type: "reset" })}
             >
               Reset and Start Over

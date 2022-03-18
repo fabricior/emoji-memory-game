@@ -17,20 +17,20 @@ export function BoardRow(props: BoardRowProps) {
   return (
     <tr>
       {props.row.cards.map((card) => (
-        <td className="hover:bg-mint cursor-pointer text-lg border border-slate-300" key={card.id}>
-          <span
+        <td className="transition ease-in-out delay-70 hover:-translate-y-1 hover:scale-105 duration-100 hover:bg-mint cursor-pointer text-lg border border-slate-300" key={card.id}>
+          <button
             onClick={
               !card.displayedBy && props.guessStatus !== GuessStatus.Incorrect
                 ? (e) => handleClick({ ...e, card })
-                : undefined
+                    : undefined
             }
           >
             {card.displayedBy ? card.emoji : "⬜"}
-          </span>
+          </button>
         </td>
       ))}
     </tr>
-  );
+  );  
 }
 
 type BoardProps = {
