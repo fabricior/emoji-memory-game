@@ -5,10 +5,10 @@ import {
   getTwoMostRecentlyDisplayedCardsInRound,
 } from "./gameFunctions";
 import {
+  memoryGameReducer,
   Card,
   GuessStatus,
   initialState,
-  memoryGameReducer,
   PlayerNumber,
   Row,
 } from "./gameReducer";
