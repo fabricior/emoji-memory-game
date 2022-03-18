@@ -193,6 +193,26 @@ function computeScores(
   );
 }
 
+type PlayerProps = {
+  playerNumber: PlayerNumber;
+  score: number;
+  children?: React.ReactChild | React.ReactChild[];
+};
+
+function Player(props: PlayerProps) {
+  return (
+    <div className="bg-mint text-sailor-blue p-4">
+      <div>
+        Player <span className="font-bold">{props.playerNumber}</span>
+      </div>
+      <div>
+        Score: <span className="font-bold">{props.score}</span>
+      </div>
+      {props.children}
+    </div>
+  );
+}
+
 export function Game() {
   const [state, dispatch] = useReducer(memoryGameReducer, initialState);
 
@@ -222,31 +242,51 @@ export function Game() {
   const isGameOver = count === state.cards.length;
 
   return (
-    <div>
-      <h1>Memory Game</h1>
-      <h2>Current Player: {state.currentPlayer}</h2>
-      <h2>Round: {state.round}</h2>
-      <table
-        style={{ border: "solid", marginLeft: "auto", marginRight: "auto" }}
-      >
-        <tbody className="bg-amber-400">
-          {rows.map((r) => (
-            <RowView
-              key={r.id}
-              row={r}
-              dispatch={dispatch}
-              guessStatus={guessStatus}
-            />
-          ))}
-        </tbody>
-      </table>
-      <div>Score Player 1: {correctGuessesPlayer1} </div>
-      <div>Score Player 2: {correctGuessesPlayer2} </div>
-      <button onClick={() => dispatch({ type: "reset" })}>Reset</button>
-      {isGameOver ? "Game over" : null}
-      <label hidden={guessStatus !== GuessStatus.Incorrect}>
-        Incorrect Guess
-      </label>
+    <div className="grid place-items-center m-4">
+      <div className="grid grid-flow-row auto-cols-max gap-1 text-center font-semibold ">
+        <div className="bg-sailor-blue text-mint font-bold p-4">
+          <h1>😂 Emoji Memory Game 😂</h1>
+        </div>
+        <div className="bg-mint text-sailor-blue p-4">
+          <h2>
+            Current Player:{" "}
+            <span className="font-bold">{state.currentPlayer}</span>
+          </h2>
+        </div>
+        <div className="bg-mint text-sailor-blue  p-4">
+          <h2>
+            Round: <span className="font-bold">{state.round}</span>
+          </h2>
+        </div>
+        <div className="grid grid-flow-col gap-1">
+          <Player playerNumber={1} score={correctGuessesPlayer1}></Player>
+          <table className="bg-sailor-blue border-separate">
+            <tbody>
+              {rows.map((r) => (
+                <RowView
+                  key={r.id}
+                  row={r}
+                  dispatch={dispatch}
+                  guessStatus={guessStatus}
+                />
+              ))}
+            </tbody>
+          </table>
+          <Player playerNumber={2} score={correctGuessesPlayer2}></Player>
+        </div>
+        <div>
+          <button
+            className="bg-sailor-blue text-mint font-bold rounded-full p-4"
+            onClick={() => dispatch({ type: "reset" })}
+          >
+            Reset and Start Over
+          </button>
+        </div>
+        {isGameOver ? "Game over" : null}
+        <label hidden={guessStatus !== GuessStatus.Incorrect}>
+          Incorrect Guess
+        </label>
+      </div>
     </div>
   );
 }
