@@ -100,6 +100,33 @@ function Player(props: PlayerProps) {
   );
 }
 
+type StatusProps = {
+  currentRound: number;
+  isGameOver: boolean;
+  guessStatus: GuessStatus;
+};
+
+function Status(props: StatusProps) {
+  let content: any;
+  if (props.isGameOver) {
+    content = <span className="font-bold">Game Over!</span>
+  } else if (props.guessStatus === GuessStatus.Incorrect) {
+    content = <span className="font-bold text-red-500">Incorrect!</span>
+  } else {
+    content = (
+      <span>
+        Round: <span className="font-bold">{props.currentRound}</span>
+      </span>
+    );
+  }
+
+  return (
+    <div className="bg-mint text-sailor-blue font-semibold p-4">
+      <h2>{content}</h2>
+    </div>
+  );
+}
+
 export function Game() {
   const [state, dispatch] = useReducer(memoryGameReducer, initialState);
 
@@ -157,11 +184,11 @@ export function Game() {
           ></Player>
         </div>
         <div className="grid grid-flow-col gap-1">
-          <div className="bg-mint text-sailor-blue font-semibold  p-4">
-            <h2>
-              Round: <span className="font-bold">{state.round}</span>
-            </h2>
-          </div>
+          <Status
+            currentRound={state.round}
+            isGameOver={isGameOver}
+            guessStatus={guessStatus}
+          ></Status>
           <div>
             <button
               className="bg-sailor-blue text-mint font-bold rounded-full p-4"
@@ -171,10 +198,6 @@ export function Game() {
             </button>
           </div>
         </div>
-        {isGameOver ? "Game over" : null}
-        <label hidden={guessStatus !== GuessStatus.Incorrect}>
-          Incorrect Guess
-        </label>
       </div>
     </div>
   );
