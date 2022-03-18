@@ -84,18 +84,20 @@ type PlayerProps = {
 
 function Player(props: PlayerProps) {
   const isActive = props.playerNumber === props.currentPlayer;
-  const pingClass = `${isActive ? "animate-ping rounded-full bg-sky-400 opacity-70 " : ""} inline-flex h-3 w-3` ;
+  const pingClass = `${
+    isActive ? "animate-ping rounded-full bg-sky-400 opacity-70 " : ""
+  } inline-flex h-3 w-3`;
 
   return (
     <div className="bg-mint text-sailor-blue rounded-full">
       <span className={pingClass}></span>
-      <div className="p-4">        
+      <div className="p-4">
         Player <span className="font-bold">{props.playerNumber}</span>
       </div>
       <div>
         Score: <span className="font-bold">{props.score}</span>
       </div>
-      {props.children}    
+      {props.children}
     </div>
   );
 }
@@ -157,11 +159,11 @@ export function Game() {
 
   return (
     <div className="grid place-items-center m-4">
-      <div className="grid grid-flow-row auto-cols-max gap-2 text-center font-semibold ">
+      <div className="grid grid-flow-row auto-cols-max text-center font-semibold ">
         <div className="bg-sailor-blue text-mint font-bold p-4">
           <h1>😂 Emoji Memory Game 😂</h1>
         </div>
-        <div className="grid grid-flow-col gap-3 p-4">
+        <div className="grid grid-flow-col gap-1 p-2">
           <Player
             playerNumber={1}
             score={correctGuessesPlayer1}
@@ -183,20 +185,22 @@ export function Game() {
             currentPlayer={state.currentPlayer}
           ></Player>
         </div>
-        <div className="grid grid-flow-col gap-1">
-          <Status
-            currentRound={state.round}
-            isGameOver={isGameOver}
-            guessStatus={guessStatus}
-          ></Status>
-          <div>
+        <div className="grid grid-flow-col">
+          <div className="m-1">
+            <Status
+              currentRound={state.round}
+              isGameOver={isGameOver}
+              guessStatus={guessStatus}
+            ></Status>
+          </div>
+          <div className="m-1">
             <button
-              className="bg-sailor-blue text-mint rounded-full p-4 transition ease-in-out delay-70 hover:-translate-y-1 hover:scale-105 duration-100"
+              className="bg-sailor-blue text-mint rounded-full h-full w-full transition ease-in-out delay-70 hover:-translate-y-1 hover:scale-105 duration-100"
               onClick={() => dispatch({ type: "reset" })}
             >
-              Reset and Start Over
+              Reset
             </button>
-          </div>         
+          </div>
         </div>
       </div>
     </div>
