@@ -1,4 +1,4 @@
-import { Row, GuessStatus, Action, Card } from "./Game";
+import { Row, GuessStatus, Action, Card } from "./gameReducer";
 
 type BoardRowProps = {
   row: Row;
