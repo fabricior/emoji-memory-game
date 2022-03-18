@@ -17,7 +17,7 @@ export function BoardRow(props: BoardRowProps) {
   return (
     <tr>
       {props.row.cards.map((card) => (
-        <td className="hover:bg-mint cursor-pointer text-lg" key={card.id}>
+        <td className="hover:bg-mint cursor-pointer text-lg border border-slate-300" key={card.id}>
           <span
             onClick={
               !card.displayedBy && props.guessStatus !== GuessStatus.Incorrect
@@ -39,7 +39,7 @@ type BoardProps = {
 
 export function Board(props: BoardProps) {
   return (
-    <table className="bg-sailor-blue border-separate">
+    <table className="border-separate border border-slate-400">
       <tbody>{props.children}</tbody>
     </table>
   );

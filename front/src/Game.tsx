@@ -134,11 +134,6 @@ export function Game() {
         <div className="bg-sailor-blue text-mint font-bold p-4">
           <h1>😂 Emoji Memory Game 😂</h1>
         </div>
-        <div className="bg-mint text-sailor-blue p-4">
-          <h2>
-            Round: <span className="font-bold">{state.round}</span>
-          </h2>
-        </div>
         <div className="grid grid-flow-col gap-3 p-4">
           <Player
             playerNumber={1}
@@ -161,13 +156,20 @@ export function Game() {
             currentPlayer={state.currentPlayer}
           ></Player>
         </div>
-        <div>
-          <button
-            className="bg-sailor-blue text-mint font-bold rounded-full p-4"
-            onClick={() => dispatch({ type: "reset" })}
-          >
-            Reset and Start Over
-          </button>
+        <div className="grid grid-flow-col gap-1">
+          <div className="bg-mint text-sailor-blue font-semibold  p-4">
+            <h2>
+              Round: <span className="font-bold">{state.round}</span>
+            </h2>
+          </div>
+          <div>
+            <button
+              className="bg-sailor-blue text-mint font-bold rounded-full p-4"
+              onClick={() => dispatch({ type: "reset" })}
+            >
+              Reset and Start Over
+            </button>
+          </div>
         </div>
         {isGameOver ? "Game over" : null}
         <label hidden={guessStatus !== GuessStatus.Incorrect}>
