@@ -32,3 +32,15 @@ export function RowView(props: RowViewProps) {
     </tr>
   );
 }
+
+type BoardProps = {
+  children?: React.ReactChild | React.ReactChild[];
+};
+
+export function Board(props: BoardProps) {
+  return (
+    <table className="bg-sailor-blue border-separate">
+      <tbody>{props.children}</tbody>
+    </table>
+  );
+}
