@@ -89,7 +89,7 @@ function Player(props: PlayerProps) {
   } inline-flex h-3 w-3`;
 
   return (
-    <div className="bg-mint text-sailor-blue rounded-full">
+    <div className="bg-mint text-sailor-blue">
       <span className={pingClass}></span>
       <div className="p-4">
         Player <span className="font-bold">{props.playerNumber}</span>
