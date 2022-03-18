@@ -14,23 +14,32 @@ export function BoardRow(props: BoardRowProps) {
   const handleClick = (e: CardClickedEvent): void =>
     props.dispatch({ type: "display_one", selectedCard: e.card });
 
+  const canClick = (card: Card) =>
+    !card.displayedBy && props.guessStatus !== GuessStatus.Incorrect;
+
   return (
     <tr>
-      {props.row.cards.map((card) => (
-        <td className="transition ease-in-out delay-70 hover:-translate-y-1 hover:scale-105 duration-100 hover:bg-mint cursor-pointer text-lg border border-slate-300" key={card.id}>
-          <button
-            onClick={
-              !card.displayedBy && props.guessStatus !== GuessStatus.Incorrect
-                ? (e) => handleClick({ ...e, card })
-                    : undefined
-            }
+      {props.row.cards.map((card) => {
+        const canClickCard = canClick(card);
+        return (
+          <td
+            className="transition ease-in-out delay-70 hover:-translate-y-1 hover:scale-105 duration-100 hover:bg-mint text-lg border border-slate-300"
+            key={card.id}
           >
-            {card.displayedBy ? card.emoji : "⬜"}
-          </button>
-        </td>
-      ))}
+            <button
+              className={`${
+                canClickCard ? "cursor-pointer" : "cursor-not-allowed"
+              }`}
+              disabled={!canClickCard}
+              onClick={(e) => handleClick({ ...e, card })}
+            >
+              {card.displayedBy ? card.emoji : "⬜"}
+            </button>
+          </td>
+        );
+      })}
     </tr>
-  );  
+  );
 }
 
 type BoardProps = {
