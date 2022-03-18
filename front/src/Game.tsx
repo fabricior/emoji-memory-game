@@ -1,5 +1,6 @@
 import { useEffect, useReducer } from "react";
 import { RowView } from "./RowView";
+import { shuffle } from "./utils";
 
 export type Card = {
   id: number;
@@ -27,27 +28,14 @@ export enum GuessStatus {
   Incorrect = "Incorrect",
 }
 
+const emojis = ["❤", "🌹", "😍", "🏠", "👍", "🎂", "🐱‍🐉", "😂" ]
+emojis.push(...emojis);
+shuffle(emojis)
+
 const initialState: BoardState = {
   currentPlayer: 1,
   round: 1,
-  cards: [
-    { id: 0, emoji: "❤", displayedBy: null, displayedOnRound: null },
-    { id: 1, emoji: "🌹", displayedBy: null, displayedOnRound: null },
-    { id: 2, emoji: "❤", displayedBy: null, displayedOnRound: null },
-    { id: 3, emoji: "😍", displayedBy: null, displayedOnRound: null },
-    { id: 4, emoji: "😍", displayedBy: null, displayedOnRound: null },
-    { id: 5, emoji: "🏠", displayedBy: null, displayedOnRound: null },
-    { id: 6, emoji: "👍", displayedBy: null, displayedOnRound: null },
-    { id: 7, emoji: "😂", displayedBy: null, displayedOnRound: null },
-    { id: 8, emoji: "😂", displayedBy: null, displayedOnRound: null },
-    { id: 9, emoji: "🏠", displayedBy: null, displayedOnRound: null },
-    { id: 10, emoji: "🌹", displayedBy: null, displayedOnRound: null },
-    { id: 11, emoji: "👍", displayedBy: null, displayedOnRound: null },
-    { id: 12, emoji: "🎂", displayedBy: null, displayedOnRound: null },
-    { id: 13, emoji: "🐱‍🐉", displayedBy: null, displayedOnRound: null },
-    { id: 14, emoji: "🐱‍🐉", displayedBy: null, displayedOnRound: null },
-    { id: 15, emoji: "🎂", displayedBy: null, displayedOnRound: null },
-  ],
+  cards: emojis.map((emoji, index) => ({id: index, emoji, displayedBy: null, displayedOnRound: null})),  
 };
 
 export type Action =
