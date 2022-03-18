@@ -77,14 +77,19 @@ function computeScores(
 
 type PlayerProps = {
   playerNumber: PlayerNumber;
+  currentPlayer: PlayerNumber;
   score: number;
   children?: React.ReactChild | React.ReactChild[];
 };
 
 function Player(props: PlayerProps) {
+  const isActive = props.playerNumber === props.currentPlayer;
+  const classes = `bg-mint text-sailor-blue ${
+    isActive ? " outline outline-cyan-500 outline-8" : ""
+  }`;
   return (
-    <div className="bg-mint text-sailor-blue p-4">
-      <div>
+    <div className={classes}>
+      <div className="p-4">
         Player <span className="font-bold">{props.playerNumber}</span>
       </div>
       <div>
@@ -125,23 +130,21 @@ export function Game() {
 
   return (
     <div className="grid place-items-center m-4">
-      <div className="grid grid-flow-row auto-cols-max gap-1 text-center font-semibold ">
+      <div className="grid grid-flow-row auto-cols-max gap-2 text-center font-semibold ">
         <div className="bg-sailor-blue text-mint font-bold p-4">
           <h1>😂 Emoji Memory Game 😂</h1>
         </div>
         <div className="bg-mint text-sailor-blue p-4">
           <h2>
-            Current Player:{" "}
-            <span className="font-bold">{state.currentPlayer}</span>
-          </h2>
-        </div>
-        <div className="bg-mint text-sailor-blue  p-4">
-          <h2>
             Round: <span className="font-bold">{state.round}</span>
           </h2>
         </div>
-        <div className="grid grid-flow-col gap-1">
-          <Player playerNumber={1} score={correctGuessesPlayer1}></Player>
+        <div className="grid grid-flow-col gap-3 p-4">
+          <Player
+            playerNumber={1}
+            score={correctGuessesPlayer1}
+            currentPlayer={state.currentPlayer}
+          ></Player>
           <Board>
             {rows.map((r) => (
               <BoardRow
@@ -152,7 +155,11 @@ export function Game() {
               />
             ))}
           </Board>
-          <Player playerNumber={2} score={correctGuessesPlayer2}></Player>
+          <Player
+            playerNumber={2}
+            score={correctGuessesPlayer2}
+            currentPlayer={state.currentPlayer}
+          ></Player>
         </div>
         <div>
           <button
