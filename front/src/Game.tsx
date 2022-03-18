@@ -229,7 +229,7 @@ export function Game() {
       <table
         style={{ border: "solid", marginLeft: "auto", marginRight: "auto" }}
       >
-        <tbody>
+        <tbody className="bg-amber-400">
           {rows.map((r) => (
             <RowView
               key={r.id}
