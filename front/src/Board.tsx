@@ -1,6 +1,6 @@
 import { Row, GuessStatus, Action, Card } from "./Game";
 
-type RowViewProps = {
+type BoardRowProps = {
   row: Row;
   guessStatus: GuessStatus;
   dispatch: React.Dispatch<Action>;
@@ -10,7 +10,7 @@ interface CardClickedEvent extends React.MouseEvent<HTMLSpanElement> {
   card: Card;
 }
 
-export function RowView(props: RowViewProps) {
+export function BoardRow(props: BoardRowProps) {
   const handleClick = (e: CardClickedEvent): void =>
     props.dispatch({ type: "display_one", selectedCard: e.card });
 

@@ -1,5 +1,5 @@
 import { useEffect, useReducer } from "react";
-import { Board, RowView } from "./RowView";
+import { Board, BoardRow } from "./Board";
 import { shuffle } from "./utils";
 
 export type Card = {
@@ -262,7 +262,7 @@ export function Game() {
           <Player playerNumber={1} score={correctGuessesPlayer1}></Player>
           <Board>
             {rows.map((r) => (
-              <RowView
+              <BoardRow
                 key={r.id}
                 row={r}
                 dispatch={dispatch}
