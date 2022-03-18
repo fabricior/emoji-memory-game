@@ -17,7 +17,7 @@ export function RowView(props: RowViewProps) {
   return (
     <tr>
       {props.row.cards.map((card) => (
-        <td key={card.id}>
+        <td className="hover:bg-sky-600 cursor-pointer" key={card.id}>
           <span
             onClick={
               !card.displayedBy && props.guessStatus !== GuessStatus.Incorrect
