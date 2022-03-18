@@ -1,5 +1,5 @@
 // https://stackoverflow.com/a/2450976/3287347
-export function shuffle(array) {
+export function shuffle(array: Array<string>) : Array<string> {
   let currentIndex = array.length,
     randomIndex;
 

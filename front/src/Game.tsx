@@ -28,14 +28,24 @@ export enum GuessStatus {
   Incorrect = "Incorrect",
 }
 
-const emojis = ["❤", "🌹", "😍", "🏠", "👍", "🎂", "🐱‍🐉", "😂" ]
+const emojis = ["❤", "🌹", "😍", "🏠", "👍", "🎂", "🐱‍🐉", "😂"];
 emojis.push(...emojis);
-shuffle(emojis)
+
+const createCardsToStartGame = (): Array<Card> => {
+  const emojisCopy = [...emojis];
+  shuffle(emojisCopy);
+  return emojisCopy.map((emoji, index) => ({
+    id: index,
+    emoji,
+    displayedBy: null,
+    displayedOnRound: null,
+  }));
+};
 
 const initialState: BoardState = {
   currentPlayer: 1,
   round: 1,
-  cards: emojis.map((emoji, index) => ({id: index, emoji, displayedBy: null, displayedOnRound: null})),  
+  cards: createCardsToStartGame(),
 };
 
 export type Action =
@@ -48,6 +58,7 @@ function memoryGameReducer(state: BoardState, action: Action): BoardState {
     case "reset":
       return {
         ...initialState,
+        cards: createCardsToStartGame(),
       };
     case "display_one":
       const displayedCardsCountSoFar = countDisplayedCards(state.cards);
