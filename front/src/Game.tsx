@@ -84,18 +84,18 @@ type PlayerProps = {
 
 function Player(props: PlayerProps) {
   const isActive = props.playerNumber === props.currentPlayer;
-  const classes = `bg-mint text-sailor-blue ${
-    isActive ? " outline outline-cyan-500 outline-8" : ""
-  }`;
+  const pingClass = `${isActive ? "animate-ping rounded-full bg-sky-400 opacity-70 " : ""} inline-flex h-3 w-3` ;
+
   return (
-    <div className={classes}>
-      <div className="p-4">
+    <div className="bg-mint text-sailor-blue rounded-full">
+      <span className={pingClass}></span>
+      <div className="p-4">        
         Player <span className="font-bold">{props.playerNumber}</span>
       </div>
       <div>
         Score: <span className="font-bold">{props.score}</span>
       </div>
-      {props.children}
+      {props.children}    
     </div>
   );
 }
@@ -109,9 +109,9 @@ type StatusProps = {
 function Status(props: StatusProps) {
   let content: any;
   if (props.isGameOver) {
-    content = <span className="font-bold">Game Over!</span>
+    content = <span className="font-bold">Game Over!</span>;
   } else if (props.guessStatus === GuessStatus.Incorrect) {
-    content = <span className="font-bold text-red-500">No match!</span>
+    content = <span className="font-bold text-red-500">No match!</span>;
   } else {
     content = (
       <span>
@@ -196,7 +196,7 @@ export function Game() {
             >
               Reset and Start Over
             </button>
-          </div>
+          </div>         
         </div>
       </div>
     </div>
