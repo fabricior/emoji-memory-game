@@ -2,7 +2,7 @@
 
 ## How to run
 
-TODO: 
+[Click here to play](https://nifty-banach-19c436.netlify.app/)
 
 ## Motivation
 
