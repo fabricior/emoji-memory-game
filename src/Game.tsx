@@ -89,7 +89,7 @@ function Player(props: PlayerProps) {
   } inline-flex h-3 w-3`;
 
   return (
-    <div className="bg-mint text-sailor-blue">
+    <section title={`Player ${props.playerNumber}`} className="bg-mint text-sailor-blue">
       <span className={pingClass}></span>
       <div className="p-4">
         Player <span className="font-bold">{props.playerNumber}</span>
@@ -98,7 +98,7 @@ function Player(props: PlayerProps) {
         Score: <span className="font-bold">{props.score}</span>
       </div>
       {props.children}
-    </div>
+    </section>
   );
 }
 
@@ -123,9 +123,9 @@ function Status(props: StatusProps) {
   }
 
   return (
-    <div className="bg-mint text-sailor-blue font-semibold p-4">
+    <section title="Status" className="bg-mint text-sailor-blue font-semibold p-4">
       <h2>{content}</h2>
-    </div>
+    </section>
   );
 }
 

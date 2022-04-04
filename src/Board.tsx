@@ -27,6 +27,7 @@ export function BoardRow(props: BoardRowProps) {
             key={card.id}
           >
             <button
+              title={`Card ${card.id + 1}`}
               className={`${
                 canClickCard ? "cursor-pointer" : "cursor-not-allowed"
               }`}
