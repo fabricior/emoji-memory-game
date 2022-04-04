@@ -18,11 +18,11 @@ export function BoardRow(props: BoardRowProps) {
     !card.displayedBy && props.guessStatus !== GuessStatus.Incorrect;
 
   return (
-    <tr>
+    <>
       {props.row.cards.map((card) => {
         const canClickCard = canClick(card);
         return (
-          <td
+          <div
             className="transition ease-in-out delay-70 hover:-translate-y-1 hover:scale-105 duration-100 hover:bg-mint text-lg border border-slate-300"
             key={card.id}
           >
@@ -35,10 +35,10 @@ export function BoardRow(props: BoardRowProps) {
             >
               {card.displayedBy ? card.emoji : "⬜"}
             </button>
-          </td>
+          </div>
         );
       })}
-    </tr>
+    </>
   );
 }
 
@@ -48,8 +48,8 @@ type BoardProps = {
 
 export function Board(props: BoardProps) {
   return (
-    <table className="border-separate border border-slate-400">
-      <tbody>{props.children}</tbody>
-    </table>
+    <div className="grid grid-cols-4 grid-rows-4 gap-2">
+      {props.children}
+    </div>
   );
 }
