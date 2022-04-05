@@ -21,12 +21,14 @@ export function BoardRow(props: BoardRowProps) {
     <>
       {props.row.cards.map((card) => {
         const canClickCard = canClick(card);
+        const oneBasedId = card.id + 1;
         return (
           <div
             className="transition ease-in-out delay-70 hover:-translate-y-1 hover:scale-105 duration-100 hover:bg-mint text-lg border border-slate-300"
             key={card.id}
           >
             <button
+              aria-label={`card-${oneBasedId}`}
               title={`Card ${card.id + 1}`}
               className={`${
                 canClickCard ? "cursor-pointer" : "cursor-not-allowed"
