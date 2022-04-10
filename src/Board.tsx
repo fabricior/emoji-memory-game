@@ -1,3 +1,4 @@
+import { Card } from "./Card";
 import { Row, GuessStatus, Action, CardData } from "./gameReducer";
 
 type BoardRowProps = {
@@ -21,24 +22,13 @@ export function BoardRow(props: BoardRowProps) {
     <>
       {props.row.cards.map((cardData) => {
         const canClickCard = canClick(cardData);
-        const oneBasedId = cardData.id + 1;
         return (
-          <div
-            className="transition ease-in-out delay-70 hover:-translate-y-1 hover:scale-105 duration-100 hover:bg-mint text-lg border border-slate-300"
+          <Card
             key={cardData.id}
-          >
-            <button
-              aria-label={`card-${oneBasedId}`}
-              title={`Card ${oneBasedId}`}
-              className={`${
-                canClickCard ? "cursor-pointer" : "cursor-not-allowed"
-              }`}
-              disabled={!canClickCard}
-              onClick={(e) => handleClick({ ...e, cardData: cardData })}
-            >
-              {cardData.displayedBy ? cardData.emoji : "⬜"}
-            </button>
-          </div>
+            cardData={cardData}
+            canClickCard={canClickCard}
+            onClick={(e) => handleClick({ ...e, cardData: cardData })}
+          />
         );
       })}
     </>
@@ -51,8 +41,6 @@ type BoardProps = {
 
 export function Board(props: BoardProps) {
   return (
-    <div className="grid grid-cols-4 grid-rows-4 gap-2">
-      {props.children}
-    </div>
+    <div className="grid grid-cols-4 grid-rows-4 gap-2">{props.children}</div>
   );
 }
