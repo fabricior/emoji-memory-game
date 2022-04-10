@@ -29,7 +29,7 @@ export function BoardRow(props: BoardRowProps) {
           >
             <button
               aria-label={`card-${oneBasedId}`}
-              title={`Card ${card.id + 1}`}
+              title={`Card ${oneBasedId}`}
               className={`${
                 canClickCard ? "cursor-pointer" : "cursor-not-allowed"
               }`}
