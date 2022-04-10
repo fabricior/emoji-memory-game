@@ -6,14 +6,14 @@ import {
 } from "./gameFunctions";
 import {
   memoryGameReducer,
-  Card,
+  CardData,
   GuessStatus,
   initialState,
   PlayerNumber,
   Row,
 } from "./gameReducer";
 
-function buildRows(squares: Card[]): Row[] {
+function buildRows(squares: CardData[]): Row[] {
   let rows: Row[] = [];
   for (let i = 0; i < squares.length; i = i + 4) {
     const cellsInRow = squares.slice(i, i + 4);
@@ -22,7 +22,7 @@ function buildRows(squares: Card[]): Row[] {
   return rows;
 }
 
-function computeGuessResult(cards: Array<Card>, round: number): GuessStatus {
+function computeGuessResult(cards: Array<CardData>, round: number): GuessStatus {
   const previousRound = round - 1;
   const lastTwoCards = getTwoMostRecentlyDisplayedCardsInRound(
     cards,
@@ -44,7 +44,7 @@ function computeGuessResult(cards: Array<Card>, round: number): GuessStatus {
 }
 
 function computeScores(
-  cards: Card[],
+  cards: CardData[],
   currentRound: number,
   guessStatus: GuessStatus
 ): { correctGuessesPlayer1: number; correctGuessesPlayer2: number } {
@@ -53,7 +53,7 @@ function computeScores(
 
   let initialValue = { correctGuessesPlayer1: 0, correctGuessesPlayer2: 0 };
 
-  const isCorrectScoreForPlayer = (card: Card, player: PlayerNumber) => {
+  const isCorrectScoreForPlayer = (card: CardData, player: PlayerNumber) => {
     return (
       card.displayedOnRound !== null &&
       card.displayedOnRound <= upToRound &&

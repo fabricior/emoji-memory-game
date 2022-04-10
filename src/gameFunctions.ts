@@ -1,13 +1,13 @@
-import { Card } from "./gameReducer";
+import { CardData } from "./gameReducer";
 
-export function countDisplayedCards(cards: Card[]): number {
-  return cards.filter((card) => card.displayedBy).length;
+export function countDisplayedCards(cards: CardData[]): number {
+  return cards.filter((cardData) => cardData.displayedBy).length;
 }
 
 export function getTwoMostRecentlyDisplayedCardsInRound(
-  cards: Card[],
+  cards: CardData[],
   round: number
-): Card[] {
+): CardData[] {
   return [...cards]
     .sort((a, b) => {
       if (a.displayedOnRound === null && b.displayedOnRound === null) {
@@ -20,6 +20,6 @@ export function getTwoMostRecentlyDisplayedCardsInRound(
         return a.displayedOnRound - b.displayedOnRound; // desc
       }
     })
-    .filter((card) => card.displayedOnRound === round)
+    .filter((cardData) => cardData.displayedOnRound === round)
     .splice(-2);
 }

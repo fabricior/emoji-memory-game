@@ -1,4 +1,4 @@
-import { Row, GuessStatus, Action, Card } from "./gameReducer";
+import { Row, GuessStatus, Action, CardData } from "./gameReducer";
 
 type BoardRowProps = {
   row: Row;
@@ -7,25 +7,25 @@ type BoardRowProps = {
 };
 
 interface CardClickedEvent extends React.MouseEvent<HTMLSpanElement> {
-  card: Card;
+  cardData: CardData;
 }
 
 export function BoardRow(props: BoardRowProps) {
   const handleClick = (e: CardClickedEvent): void =>
-    props.dispatch({ type: "display_one", selectedCard: e.card });
+    props.dispatch({ type: "display_one", selectedCard: e.cardData });
 
-  const canClick = (card: Card) =>
+  const canClick = (card: CardData) =>
     !card.displayedBy && props.guessStatus !== GuessStatus.Incorrect;
 
   return (
     <>
-      {props.row.cards.map((card) => {
-        const canClickCard = canClick(card);
-        const oneBasedId = card.id + 1;
+      {props.row.cards.map((cardData) => {
+        const canClickCard = canClick(cardData);
+        const oneBasedId = cardData.id + 1;
         return (
           <div
             className="transition ease-in-out delay-70 hover:-translate-y-1 hover:scale-105 duration-100 hover:bg-mint text-lg border border-slate-300"
-            key={card.id}
+            key={cardData.id}
           >
             <button
               aria-label={`card-${oneBasedId}`}
@@ -34,9 +34,9 @@ export function BoardRow(props: BoardRowProps) {
                 canClickCard ? "cursor-pointer" : "cursor-not-allowed"
               }`}
               disabled={!canClickCard}
-              onClick={(e) => handleClick({ ...e, card })}
+              onClick={(e) => handleClick({ ...e, cardData: cardData })}
             >
-              {card.displayedBy ? card.emoji : "⬜"}
+              {cardData.displayedBy ? cardData.emoji : "⬜"}
             </button>
           </div>
         );

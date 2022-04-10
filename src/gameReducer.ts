@@ -4,7 +4,7 @@ import {
 } from "./gameFunctions";
 import { shuffle } from "./utils";
 
-export type Card = {
+export type CardData = {
   id: number;
   emoji: string;
   displayedBy: PlayerNumber | null;
@@ -16,12 +16,12 @@ export type PlayerNumber = 1 | 2;
 type BoardState = {
   currentPlayer: PlayerNumber;
   round: number;
-  cards: Card[];
+  cards: CardData[];
 };
 
 export type Row = {
   id: number;
-  cards: Card[];
+  cards: CardData[];
 };
 
 export enum GuessStatus {
@@ -33,7 +33,7 @@ export enum GuessStatus {
 const emojis = ["❤", "🌹", "😍", "🏠", "👍", "🎂", "🐱‍🐉", "😂"];
 emojis.push(...emojis);
 
-const createCardsToStartGame = (): Array<Card> => {
+const createCardsToStartGame = (): Array<CardData> => {
   const emojisCopy = [...emojis];
   shuffle(emojisCopy);
   return emojisCopy.map((emoji, index) => ({
@@ -52,7 +52,7 @@ export const initialState: BoardState = {
 
 export type Action =
   | { type: "reset" }
-  | { type: "display_one"; selectedCard: Card }
+  | { type: "display_one"; selectedCard: CardData }
   | { type: "revert_incorrect_guess" };
 
 export function memoryGameReducer(
